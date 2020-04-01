@@ -1,4 +1,17 @@
-* text eol=lf
+
+# Файлы и папки операционной системы
+.DS_Store
+Thumbs.db
+
+# Файлы проекта
+markup/
+node_modules/
+npm-debug.log*
+
+# Файлы редактора
+.idea
+*.sublime*
+.vscode
 
 *.png binary
 *.jpg binary
@@ -6,3 +19,5 @@
 *.webp binary
 *.woff binary
 *.woff2 binary
+
+node_modules/
