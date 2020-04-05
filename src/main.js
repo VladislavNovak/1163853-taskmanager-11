@@ -1,19 +1,18 @@
-'use strict';
 /* jshint esversion: 6 */
 /* jshint browser: true */
 /* jshint asi: true */
+
+import {createBoard} from "./components/board.js"; // => возвращающаем DOM для сортировки
+import {createCard} from "./components/card.js"; // => возвращающаем DOM для карточки задачи
+import {createControl} from "./components/control.js"; // => возвращающаем DOM для меню
+import {createEdit} from "./components/edit.js"; // => возвращающаем DOM для формы создания/редактирования задачи
+import {createFilters} from "./components/filters.js"; // => возвращающаем DOM для фильтров
+import {createLoadButton} from "./components/loadMoreButton.js"; // => возвращающаем DOM для кнопку load more
 
 const TASK_COUNT = 3; // число блоков DOM.card
 
 const mainElement = document.querySelector(`.main`);
 const controlElement = mainElement.querySelector(`.main__control`);
-
-const createControl = () => window.transition.DOM.control; // => функция, возвращающая DOM для меню
-const createFilters = () => window.transition.DOM.filters; // => функция, возвращающая DOM для фильтров
-const createBoard = () => window.transition.DOM.board; // => функция, возвращающая DOM для сортировки
-const createCard = () => window.transition.DOM.card; // => функция, возвращающая DOM для карточки задачи
-const createEdit = () => window.transition.DOM.edit; // => функция, возвращающая DOM для формы создания/редактирования задачи
-const createLoadButton = () => window.transition.DOM.loadMoreButton; // => функция, возвращающая DOM для кнопку load more
 
 // Функция для рендеринга (вставки в DOM) компонентов. Принимает:
 // container - элемент, в который будем вставлять вёрстку,
