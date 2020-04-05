@@ -1,3 +1,7 @@
+parserOptions:
+  ecmaVersion: 2015  # нужно, чтобы ESLint понимал, что мы используем модули
+  sourceType: 'module'
+
 env:
   es6: true
   browser: true
