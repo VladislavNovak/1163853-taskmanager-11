@@ -1,38 +1,55 @@
-/* jshint esversion: 6 */
-/* jshint browser: true */
-/* jshint asi: true */
+import {createBoardTemplate} from "./components/board.js";
+import {createFilterTemplate} from "./components/filter.js";
+import {createLoadMoreButtonTemplate} from "./components/load-more-button.js";
+import {createTaskEditTemplate} from "./components/task-edit.js";
+import {createTaskTemplate} from "./components/task.js";
+import {createSiteMenuTemplate} from "./components/site-menu.js";
+import {createSortingTemplate} from "./components/sorting.js";
+import {generateFilters} from "./mock/filter.js";
+import {generateTasks} from "./mock/task.js";
 
-import {createBoard} from "./components/board.js"; // => возвращающаем DOM для сортировки
-import {createCard} from "./components/card.js"; // => возвращающаем DOM для карточки задачи
-import {createControl} from "./components/control.js"; // => возвращающаем DOM для меню
-import {createEdit} from "./components/edit.js"; // => возвращающаем DOM для формы создания/редактирования задачи
-import {createFilters} from "./components/filters.js"; // => возвращающаем DOM для фильтров
-import {createLoadButton} from "./components/loadMoreButton.js"; // => возвращающаем DOM для кнопку load more
 
-const TASK_COUNT = 3; // число блоков DOM.card
+const TASK_COUNT = 22;
+const SHOWING_TASKS_COUNT_ON_START = 8;
+const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
-const mainElement = document.querySelector(`.main`);
-const controlElement = mainElement.querySelector(`.main__control`);
+const render = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
 
-// Функция для рендеринга (вставки в DOM) компонентов. Принимает:
-// container - элемент, в который будем вставлять вёрстку,
-// template - вёрстку, которую требуется отрендерить в этот элемент,
-// position - положение в container, куда требуется вставить вёрстку:
-const render = (container, template, position) => container.insertAdjacentHTML(position, template);
+const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
-render(controlElement, createControl(), `beforeend`); // => отрисовываем блок DOM.control в .main__control
+const filters = generateFilters();
+const tasks = generateTasks(TASK_COUNT);
 
-render(mainElement, createFilters(), `beforeend`); // => отрисовываем блок DOM.filters в .main
+render(siteHeaderElement, createSiteMenuTemplate(), `beforeend`);
+render(siteMainElement, createFilterTemplate(filters), `beforeend`);
+render(siteMainElement, createBoardTemplate(), `beforeend`);
 
-render(mainElement, createBoard(), `beforeend`); // => отрисовываем блок DOM.board в .main
+const boardElement = siteMainElement.querySelector(`.board`);
+const taskListElement = siteMainElement.querySelector(`.board__tasks`);
 
-const boardElement = mainElement.querySelector(`.board`);
-const boardTasksElement = mainElement.querySelector(`.board__tasks`);
+render(boardElement, createSortingTemplate(), `afterbegin`);
+render(taskListElement, createTaskEditTemplate(tasks[0]), `beforeend`);
 
-render(boardTasksElement, createEdit(), `beforeend`); // => отрисовываем блок DOM.edit в .board__tasks
+let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
 
-for (let i = 0; i < TASK_COUNT; i++) {
-  render(boardTasksElement, createCard(), `beforeend`); // => отрисовываем идентичные блоки DOM.card в .board__tasks
-}
+tasks.slice(1, showingTasksCount)
+  .forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
 
-render(boardElement, createLoadButton(), `beforeend`); // =>отрисовываем DOM.loadMoreButton в .board
+render(boardElement, createLoadMoreButtonTemplate(), `beforeend`);
+
+const loadMoreButton = boardElement.querySelector(`.load-more`);
+
+loadMoreButton.addEventListener(`click`, () => {
+  const prevTasksCount = showingTasksCount;
+  showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+
+  tasks.slice(prevTasksCount, showingTasksCount)
+    .forEach((task) => render(taskListElement, createTaskTemplate(task), `beforeend`));
+
+  if (showingTasksCount >= tasks.length) {
+    loadMoreButton.remove();
+  }
+});
